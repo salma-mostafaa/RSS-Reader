@@ -1,4 +1,4 @@
-﻿const feedInput = document.getElementById("feedUrl");
+const feedInput = document.getElementById("feedUrl");
 const addFeedButton = document.getElementById("addFeedButton");
 const feedsDiv = document.getElementById("feeds");
 const feedsToggle = document.getElementById("feedsToggle");
@@ -14,8 +14,7 @@ let allArticles = []; //cache of the last loaded articles, so filtering doesn't 
 let allFeeds = []; //cache of the last loaded feeds, so refresh-all doesn't need a new fetch
 let activeFilters = new Set(); //currently selected feed filters, empty set = "All"
 const ARTICLES_PER_PAGE = 25; //how many articles are shown per page
-let currentPage = 1; //which page of the filtered articles is currently shown
-
+let currentPage = parseInt(sessionStorage.getItem("currentPage"), 10) || 1; //which page of the filtered articles is currently shown, restored from this session if available
 
 function initTheme() {
     const saved = localStorage.getItem("rss-theme");
@@ -133,7 +132,6 @@ feedInput.addEventListener("keydown", (e) => {
     }
 });
 
-/* ===== REFRESH ALL ===== */
 
 refreshAllButton.addEventListener("click", async () => {
     if (allFeeds.length === 0) {
@@ -159,7 +157,6 @@ refreshAllButton.addEventListener("click", async () => {
     }
 });
 
-/* ===== SUBSCRIPTIONS ===== */
 
 feedsToggle.addEventListener("click", () => {
     feedsExpanded = !feedsExpanded;
@@ -272,6 +269,7 @@ async function loadFeeds() {
     applyFeedsCollapseState(allFeeds.length);
 }
 
+/* ===== ARTICLES ===== */
 
 async function loadArticles() {
     const response = await fetch("/articles");
@@ -401,6 +399,7 @@ function renderArticles() {
 
         prevButton.addEventListener("click", () => {
             currentPage -= 1;
+            sessionStorage.setItem("currentPage", currentPage);
             renderArticles();
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
@@ -417,6 +416,7 @@ function renderArticles() {
 
         nextButton.addEventListener("click", () => {
             currentPage += 1;
+            sessionStorage.setItem("currentPage", currentPage);
             renderArticles();
             window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -440,6 +440,7 @@ function renderArticles() {
 
             if (!Number.isNaN(target) && target >= 1 && target <= totalPages) {
                 currentPage = target;
+                sessionStorage.setItem("currentPage", currentPage);
                 renderArticles();
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
