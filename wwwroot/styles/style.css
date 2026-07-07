@@ -1,0 +1,248 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --danger: #dc2626;
+    --background: #f4f6fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #dbe2ea;
+    --shadow: 0 4px 14px rgba(0,0,0,.08);
+    --radius: 14px;
+}
+
+/* ===== PAGE ===== */
+
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: Segoe UI,Arial,sans-serif;
+    max-width: 950px;
+    margin: auto;
+    padding: 30px;
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 2.2rem;
+}
+
+h2 {
+    margin: 35px 0 15px;
+    font-size: 1.3rem;
+}
+
+
+.add-feed {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+#feedUrl {
+    flex: 1;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 16px;
+    outline: none;
+}
+
+    #feedUrl:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+    }
+
+#addFeedButton {
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius);
+    background: #2d53c6;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .2s;
+}
+
+    #addFeedButton:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+
+#feeds {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+    #feeds > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card);
+        padding: 16px 20px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        transition: .2s;
+    }
+
+        #feeds > div:hover {
+            transform: translateY(-2px);
+        }
+
+    #feeds span {
+        font-weight: 600;
+        font-size: 17px;
+    }
+
+    #feeds button {
+        background: #e2e3e5;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 8px 12px;
+        margin: 0 2px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        #feeds button:hover {
+            background: #9bb9c5;
+            transform: scale(1.05);
+        }
+
+
+/* ===== ARTICLE FILTERS ===== */
+
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    background: var(--card);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .filter-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+
+#articles {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+    #articles > div {
+        background: white;
+        border-radius: var(--radius);
+        padding: 22px;
+        box-shadow: var(--shadow);
+        transition: .2s;
+    }
+
+        #articles > div:hover {
+            transform: translateY(-3px);
+        }
+
+    #articles h3 {
+        margin-bottom: 10px;
+        color: #2d53c6;
+    }
+
+    #articles p {
+        margin: 10px 0;
+        color: var(--muted);
+        line-height: 1.6;
+    }
+
+    #articles a {
+        display: inline-block;
+        margin-top: 10px;
+        text-decoration: none;
+        color: #3d567f;
+        font-weight: bold;
+    }
+
+        #articles a:hover {
+            text-decoration: none;
+            color: #050151;
+        }
+
+hr {
+    display: none;
+}
+
+
+@media(max-width:768px) {
+
+    body {
+        padding: 18px;
+    }
+
+    .add-feed {
+        flex-direction: column;
+    }
+
+    #addFeedButton {
+        width: 100%;
+    }
+
+    #feeds > div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    #feeds button {
+        align-self: flex-end;
+    }
+}
+
+@media(max-width:480px) {
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+    }
+
+    #articles > div {
+        padding: 16px;
+    }
+
+    #articles h3 {
+        font-size: 1rem;
+    }
+}
