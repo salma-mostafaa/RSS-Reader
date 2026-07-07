@@ -16,7 +16,6 @@ let activeFilters = new Set(); //currently selected feed filters, empty set = "A
 const ARTICLES_PER_PAGE = 25; //how many articles are shown per page
 let currentPage = 1; //which page of the filtered articles is currently shown
 
-/* ===== THEME ===== */
 
 function initTheme() {
     const saved = localStorage.getItem("rss-theme");
@@ -83,7 +82,6 @@ function feedColorVar(title) {
     return `var(--f${index})`;
 }
 
-/* ===== ADD FEED ===== */
 
 addFeedButton.addEventListener("click", async () => {
     const url = feedInput.value.trim();
@@ -112,7 +110,20 @@ addFeedButton.addEventListener("click", async () => {
         await loadArticles(); //reload articles from all subscribed feeds
     }
     else {
-        showToast("That doesn't look like a valid feed link", "error");
+        let reason = "";
+        try {
+            reason = await response.json(); //the backend returns a plain string like "Feed already exists"
+        } catch {
+            reason = "";
+        }
+
+        const messages = {
+            "Feed already exists": "You're already subscribed to this feed",
+            "Invalid URL": "That doesn't look like a valid URL",
+            "Invalid Rss or Atom feed": "That link isn't a valid RSS or Atom feed"
+        };
+
+        showToast(messages[reason] || "Could not add feed", "error");
     }
 });
 
@@ -261,7 +272,6 @@ async function loadFeeds() {
     applyFeedsCollapseState(allFeeds.length);
 }
 
-/* ===== ARTICLES ===== */
 
 async function loadArticles() {
     const response = await fetch("/articles");
