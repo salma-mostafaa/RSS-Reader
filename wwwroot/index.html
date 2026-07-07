@@ -1,40 +1,67 @@
 ﻿<!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal RSS Reader</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
-
 </head>
-
 <body>
 
-    <h1>Personal RSS Reader</h1>
+    <header class="masthead">
+        <div class="masthead-brand">
+            <div>
+                <h1>Personal RSS Reader</h1>
+            </div>
+        </div>
 
-    <div class="add-feed">
-        <input id="feedUrl"
-               type="text"
-               placeholder="Enter RSS Feed URL">
+        <div class="masthead-actions">
+            <button id="refreshAllButton" class="icon-btn" type="button" title="Refresh all feeds">
+                <span class="refresh-icon" aria-hidden="true">&#8635;</span>
+                <span class="btn-label">Refresh all</span>
+            </button>
+            <button id="themeToggle" class="icon-btn theme-toggle" type="button" title="Toggle dark mode" aria-pressed="false">
+                <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+                <span class="theme-icon moon" aria-hidden="true">&#9789;</span>
+            </button>
+        </div>
+    </header>
 
-        <button id="addFeedButton">
-            Add Feed
-        </button>
-    </div>
+    <main>
+        <section class="add-feed">
+            <input id="feedUrl"
+                   type="text"
+                   placeholder="https://example.com/feed.xml">
 
-    <h2>Subscriptions</h2>
+            <button id="addFeedButton" type="button">
+                Add feed
+            </button>
+        </section>
 
-    <div id="feeds"></div>
+        <section>
+            <div class="feeds-heading">
+                <h2>Subscriptions</h2>
+                <button id="feedsToggle" class="feeds-toggle" type="button" hidden>
+                    <span class="feeds-toggle-text">Show all</span>
+                    <span class="feeds-toggle-icon" aria-hidden="true">&#9662;</span>
+                </button>
+            </div>
+            <div id="feeds"></div>
+        </section>
 
-    <h2>Articles</h2>
-
-    <div id="filters"></div>
-
-    <div id="articles"></div>
+        <section>
+            <div class="articles-heading">
+                <h2>Dispatches</h2>
+                <span id="articleCount" class="article-count"></span>
+            </div>
+            <div id="filters"></div>
+            <div id="articles"></div>
+        </section>
+    </main>
 
     <script src="js/script.js"></script>
-
 </body>
-
 </html>
