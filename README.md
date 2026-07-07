@@ -28,6 +28,34 @@ A lightweight RSS/Atom reader built with ASP.NET Core Minimal API. The applicati
 * HtmlAgilityPack (cleans HTML out of feed summaries)
 * JSON file storage
 
+
+## How to Run Locally
+ 
+### Using Visual Studio (recommended)
+ 
+1. Make sure you have [Visual Studio](https://visualstudio.microsoft.com/) installed with the **ASP.NET and web development** workload.
+2. Open `RSS_Reader.sln` (or the `.csproj` file) in Visual Studio.
+3. Press **Run** / **F5**.
+4. Visual Studio will build the project, start the server, and automatically open your default browser to the app.
+   
+### Using VS Code (alternative)
+ 
+1. Make sure the [.NET SDK](https://dotnet.microsoft.com/download) is installed (this project targets .NET 8 or later).
+2. Open the `RSS_Reader` project folder (the one containing `Program.cs`) in VS Code.
+3. Open a terminal (`` Ctrl+` ``) and restore dependencies:
+```bash
+   dotnet restore
+```
+4. Run the app:
+```bash
+   dotnet run
+```
+5. The terminal will print the URL it's listening on, something like:
+```text
+   Now listening on: https://localhost:7055
+```
+6. Open that URL manually in your browser (Chrome, Firefox, or Safari)
+
 ## Project Structure
 
 ```text
