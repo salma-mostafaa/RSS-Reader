@@ -211,6 +211,21 @@ h2 {
     gap: 10px;
     margin-bottom: 8px;
 }
+.article-search {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 10px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 14px;
+}
+
+    .article-search:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
 
 .field-error {
     font-size: 12.5px;
