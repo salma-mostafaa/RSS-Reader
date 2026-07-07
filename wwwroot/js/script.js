@@ -8,6 +8,8 @@ let feedsExpanded = false; //whether the subscriptions list is showing everythin
 const articlesDiv = document.getElementById("articles");
 const filtersDiv = document.getElementById("filters");
 const articleCountSpan = document.getElementById("articleCount");
+const articleSearchInput = document.getElementById("articleSearch");
+let searchTerm = ""; //current article title search, lowercased
 const refreshAllButton = document.getElementById("refreshAllButton");
 const themeToggle = document.getElementById("themeToggle");
 
@@ -149,6 +151,12 @@ feedInput.addEventListener("keydown", (e) => {
 });
 feedInput.addEventListener("input", () => {
     feedUrlError.hidden = true;
+});
+articleSearchInput.addEventListener("input", () => {
+    searchTerm = articleSearchInput.value.trim().toLowerCase();
+    currentPage = 1; //jump back to page 1 since the result set just changed
+    sessionStorage.setItem("currentPage", currentPage);
+    renderArticles();
 });
 
 
@@ -359,9 +367,10 @@ function renderFilters() {
 function renderArticles() {
     articlesDiv.innerHTML = ""; //remove previously displayed articles
 
-    const articles = activeFilters.size === 0
+    const articles = (activeFilters.size === 0
         ? allArticles
-        : allArticles.filter(a => activeFilters.has(a.feedTitle));
+        : allArticles.filter(a => activeFilters.has(a.feedTitle))
+    ).filter(a => a.title.toLowerCase().includes(searchTerm));
 
     articleCountSpan.textContent = articles.length > 0
         ? `${articles.length} article${articles.length === 1 ? "" : "s"}`
