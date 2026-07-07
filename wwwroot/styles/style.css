@@ -1,4 +1,4 @@
-﻿* {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -15,6 +15,7 @@
     --accent-hover: #0b5744;
     --accent-soft: #e2f2ec;
     --live: #b9790a;
+    --live-soft: #fdf0dc;
     --danger: #c53030;
     --danger-soft: #fbe7e7;
     --shadow: 0 1px 2px rgba(20, 24, 31, .04), 0 8px 20px rgba(20, 24, 31, .06);
@@ -35,6 +36,7 @@ html[data-theme="dark"] {
     --accent-hover: #4de3ba;
     --accent-soft: #12352c;
     --live: #f2b23f;
+    --live-soft: #3a2c12;
     --danger: #f0776f;
     --danger-soft: #3a1c1c;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 24px rgba(0, 0, 0, .35);
@@ -210,6 +212,16 @@ h2 {
     margin-bottom: 8px;
 }
 
+.field-error {
+    font-size: 12.5px;
+    color: var(--danger);
+    margin: -4px 0 8px 2px;
+}
+
+.field-error[hidden] {
+        display: none;
+ }
+
 #feedUrl {
     flex: 1;
     padding: 13px 16px;
@@ -273,6 +285,9 @@ h2 {
     cursor: pointer;
     padding: 4px 2px;
 }
+    .feeds-toggle[hidden] {
+        display: none;
+    }
 
     .feeds-toggle:hover {
         text-decoration: none;
@@ -323,7 +338,7 @@ h2 {
 
 .feed-identity {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     min-width: 0;
 }
@@ -333,14 +348,15 @@ h2 {
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-top: 6px;
 }
 
 .feed-row span.feed-title {
     font-weight: 600;
     font-size: 14.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .feed-actions {
@@ -575,6 +591,7 @@ hr {
         flex-direction: column;
     }
 
+
     #addFeedButton {
         width: 100%;
     }
@@ -583,6 +600,10 @@ hr {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+    }
+
+    .feed-identity {
+        width: 100%;
     }
 
     .feed-actions {
@@ -619,7 +640,6 @@ hr {
     gap: 10px;
     pointer-events: none;
 }
-
 .toast {
     display: flex;
     align-items: center;
@@ -628,8 +648,8 @@ hr {
     max-width: 360px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    color: var(--text);
+    border-left: 6px solid var(--accent);
+    color: var(--ink);
     padding: 12px 14px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -641,11 +661,23 @@ hr {
 
     .toast.error {
         border-left-color: var(--danger);
+        background: var(--danger-soft);
     }
 
     .toast.success {
         border-left-color: var(--accent);
+        background: var(--accent-soft);
     }
+
+    .toast.loading {
+        border-left-color: var(--live);
+        background: var(--live-soft);
+    }
+
+        .toast.loading .toast-icon {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
 
     .toast.closing {
         animation: toast-out .18s ease-in forwards;
