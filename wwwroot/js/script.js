@@ -1,5 +1,6 @@
 const feedInput = document.getElementById("feedUrl");
 const addFeedButton = document.getElementById("addFeedButton");
+const feedUrlError = document.getElementById("feedUrlError");
 const feedsDiv = document.getElementById("feeds");
 const feedsToggle = document.getElementById("feedsToggle");
 const FEEDS_COLLAPSE_THRESHOLD = 2;
@@ -39,22 +40,20 @@ const toastContainer = document.getElementById("toastContainer");
 
 function showToast(message, type = "error", duration = 4000) {
     const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
-
     const icon = document.createElement("span");
     icon.className = "toast-icon";
-    icon.textContent = type === "error" ? "\u26A0" : "\u2713";
     icon.setAttribute("aria-hidden", "true");
 
     const message_ = document.createElement("span");
     message_.className = "toast-message";
-    message_.textContent = message;
 
     const closeButton = document.createElement("button");
     closeButton.className = "toast-close";
     closeButton.type = "button";
     closeButton.textContent = "\u2715";
     closeButton.title = "Dismiss";
+
+    let dismissTimer = null;
 
     const dismiss = () => {
         toast.classList.add("closing");
@@ -68,7 +67,21 @@ function showToast(message, type = "error", duration = 4000) {
     toast.appendChild(closeButton);
     toastContainer.appendChild(toast);
 
-    setTimeout(dismiss, duration);
+    function set(newMessage, newType, newDuration = 4000) {
+        toast.className = `toast ${newType}`;
+        icon.textContent = newType === "error" ? "\u26A0" : newType === "loading" ? "\u21BB" : "\u2713";
+        message_.textContent = newMessage;
+
+        if (dismissTimer) clearTimeout(dismissTimer); //cancel any pending auto-dismiss from a previous state
+
+        if (newType !== "loading") {
+            dismissTimer = setTimeout(dismiss, newDuration); //loading toasts stay until updated, others auto-dismiss
+        }
+    }
+
+    set(message, type, duration);
+
+    return { update: set, dismiss }; //caller can call .update() later to turn "loading" into "success"/"error"
 }//gives every feed a consistent accent color (derived from its title) so articles
 //from the same source are easy to spot at a glance in the river of news
 
@@ -86,9 +99,12 @@ addFeedButton.addEventListener("click", async () => {
     const url = feedInput.value.trim();
 
     if (url === "") {
-        alert("Enter a feed URL");
+        feedUrlError.hidden = false;
+        feedInput.focus();
         return;
     }
+
+    feedUrlError.hidden = true;
 
     const response = await fetch("/feeds",
         {
@@ -131,6 +147,9 @@ feedInput.addEventListener("keydown", (e) => {
         addFeedButton.click();
     }
 });
+feedInput.addEventListener("input", () => {
+    feedUrlError.hidden = true;
+});
 
 
 refreshAllButton.addEventListener("click", async () => {
@@ -141,19 +160,25 @@ refreshAllButton.addEventListener("click", async () => {
     refreshAllButton.classList.add("spinning");
     refreshAllButton.disabled = true;
 
+    const toast = showToast("Refreshing all feeds\u2026", "loading");
+
     const results = await Promise.allSettled(
         allFeeds.map(feed => fetch(`/feeds/${feed.id}/refresh`, { method: "POST" }))
     );
 
     const failed = results.filter(r => r.status === "rejected" || (r.value && !r.value.ok));
 
-    await loadArticles(); //reload the river of news once every feed has finished refreshing
+    await loadArticles();
 
     refreshAllButton.classList.remove("spinning");
     refreshAllButton.disabled = false;
 
-    if (failed.length > 0) {
-        alert(`${failed.length} of ${allFeeds.length} feed(s) could not be refreshed`);
+    if (failed.length > 0 && failed.length < allFeeds.length) {
+        toast.update(`${failed.length} of ${allFeeds.length} feed(s) could not be refreshed`, "error");
+    } else if (failed.length === allFeeds.length) {
+        toast.update("Could not refresh any feeds", "error");
+    } else {
+        toast.update("All feeds refreshed", "success");
     }
 });
 
@@ -223,6 +248,8 @@ async function loadFeeds() {
         refreshButton.addEventListener("click", async () => {
             refreshButton.classList.add("spinning");
 
+            const toast = showToast(`Refreshing ${feed.title}\u2026`, "loading");
+
             const response = await fetch(`/feeds/${feed.id}/refresh`,
                 {
                     method: "POST"
@@ -231,10 +258,11 @@ async function loadFeeds() {
             refreshButton.classList.remove("spinning");
 
             if (response.ok) {
-                await loadArticles(); //reload the river of news so the freshly fetched articles for this feed show up
+                await loadArticles();
+                toast.update(`${feed.title} refreshed`, "success");
             }
             else {
-                alert("Could not refresh feed");
+                toast.update(`Could not refresh ${feed.title}`, "error");
             }
         });
 
@@ -244,14 +272,17 @@ async function loadFeeds() {
         deleteButton.title = "Delete this feed";
 
         deleteButton.addEventListener("click", async () => {
-            const response = await fetch(`/feeds/${feed.id}`,
-                {
-                    method: "DELETE"
-                });
+            feedElement.remove();                                    // ← removes row instantly, count updates to 2
+            allFeeds = allFeeds.filter(f => f.id !== feed.id);
+            applyFeedsCollapseState(allFeeds.length);
+
+            const response = await fetch(`/feeds/${feed.id}`, { method: "DELETE" });
 
             if (response.ok) {
-                await loadFeeds(); //refresh subscriptions after deletion
-                await loadArticles(); //refresh articles because one feed was removed
+                await loadArticles();
+            }
+            else {
+                await loadFeeds();   // ← if the server says the delete FAILED, this puts the feed back and count reverts to 3
             }
         });
 
