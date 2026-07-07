@@ -27,6 +27,8 @@ app.MapPost("/feeds", async (Feed feed, HttpClient httpClient) => //Feed feed ->
 {
     var feeds = LoadFeeds();
     feed.Id = Guid.NewGuid();
+    feed.Url = feed.Url?.Trim();
+
 
     if (!Uri.TryCreate(feed.Url, UriKind.Absolute, out _))
     {

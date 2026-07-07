@@ -36,8 +36,42 @@ themeToggle.addEventListener("click", () => {
     applyTheme(current === "dark" ? "light" : "dark");
 });
 
-/* ===== FEED COLOR CODING ===== */
-//gives every feed a consistent accent color (derived from its title) so articles
+
+const toastContainer = document.getElementById("toastContainer");
+
+function showToast(message, type = "error", duration = 4000) {
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+
+    const icon = document.createElement("span");
+    icon.className = "toast-icon";
+    icon.textContent = type === "error" ? "\u26A0" : "\u2713";
+    icon.setAttribute("aria-hidden", "true");
+
+    const message_ = document.createElement("span");
+    message_.className = "toast-message";
+    message_.textContent = message;
+
+    const closeButton = document.createElement("button");
+    closeButton.className = "toast-close";
+    closeButton.type = "button";
+    closeButton.textContent = "\u2715";
+    closeButton.title = "Dismiss";
+
+    const dismiss = () => {
+        toast.classList.add("closing");
+        toast.addEventListener("animationend", () => toast.remove(), { once: true });
+    };
+
+    closeButton.addEventListener("click", dismiss);
+
+    toast.appendChild(icon);
+    toast.appendChild(message_);
+    toast.appendChild(closeButton);
+    toastContainer.appendChild(toast);
+
+    setTimeout(dismiss, duration);
+}//gives every feed a consistent accent color (derived from its title) so articles
 //from the same source are easy to spot at a glance in the river of news
 
 function feedColorVar(title) {
@@ -52,7 +86,7 @@ function feedColorVar(title) {
 /* ===== ADD FEED ===== */
 
 addFeedButton.addEventListener("click", async () => {
-    const url = feedInput.value;
+    const url = feedInput.value.trim();
 
     if (url === "") {
         alert("Enter a feed URL");
@@ -78,7 +112,7 @@ addFeedButton.addEventListener("click", async () => {
         await loadArticles(); //reload articles from all subscribed feeds
     }
     else {
-        alert("Could not add feed");
+        showToast("That doesn't look like a valid feed link", "error");
     }
 });
 
