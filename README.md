@@ -8,6 +8,7 @@ A lightweight RSS/Atom reader built with ASP.NET Core Minimal API. The applicati
 * Validate feeds before adding them
 * Prevent duplicate subscriptions
 * View all subscribed feeds
+* Subscriptions list automatically collapses once more than two feeds are added, with a "Show all / Show less" toggle so it doesn't crowd out the article list
 * Remove subscriptions
 * Manually refresh a single feed to pull its latest articles
 * Display articles from all subscribed feeds
@@ -15,6 +16,7 @@ A lightweight RSS/Atom reader built with ASP.NET Core Minimal API. The applicati
 * Articles are sorted in reverse chronological order
 * Article summaries are cleaned from raw feed HTML into plain, readable text
 * Responsive user interface
+* Dark mode toggle
 * Protection against rendering unsafe HTML content (XSS prevention)
 
 ## Technology Stack
@@ -91,6 +93,10 @@ Users add an RSS or Atom feed by entering its URL. The application:
 
 Only the subscription list is persisted.
 
+### Subscriptions List
+
+The Subscriptions section renders every feed the user has added, each with a color swatch, title, refresh button, and delete button. Once a third feed is added, the list automatically collapses down to the first two rows and a "Show all (N)" toggle appears next to the "Subscriptions" heading. Clicking the toggle expands the full list ("Show less" to collapse it again). This keeps a growing subscription list from pushing the article feed further down the page. With two or fewer feeds, the toggle stays hidden and the list behaves as before.
+
 ### Article Loading
 
 Whenever all articles are requested (`GET /articles`):
@@ -154,11 +160,11 @@ If you don't have an RSS URL handy to test with, you can paste any of these into
 Possible future enhancements include:
 
 * Search articles by title
-* Article caching for faster loading
 * Read/Unread status
 * Favorite feeds
-* Pagination or infinite scrolling
-* Dark mode
+* OPML import/export for subscriptions
+* Article tagging/categorization
+* Keyboard shortcuts for navigation
 
 ## Author
 
