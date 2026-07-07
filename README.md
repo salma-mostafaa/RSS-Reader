@@ -2,6 +2,8 @@
 
 A lightweight RSS/Atom reader built with ASP.NET Core Minimal API. The application allows users to subscribe to RSS feeds, read articles in a clean "River of News" layout, manually refresh individual feeds, filter articles by feed, and manage their subscriptions through a simple web interface.
 
+**Live demo:** [https://rssreader.runasp.net/](https://rssreader.runasp.net/)
+
 ## Features
 
 * Add RSS/Atom feeds by URL
