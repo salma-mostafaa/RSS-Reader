@@ -10,6 +10,7 @@ A lightweight RSS/Atom reader built with ASP.NET Core Minimal API. The applicati
 * Validate feeds before adding them
 * Prevent duplicate subscriptions
 * View all subscribed feeds
+* Search articles by title
 * Subscriptions list automatically collapses once more than two feeds are added, with a "Show all / Show less" toggle so it doesn't crowd out the article list
 * Remove subscriptions
 * Manually refresh a single feed to pull its latest articles
@@ -161,7 +162,6 @@ If you don't have an RSS URL handy to test with, you can paste any of these into
 
 Possible future enhancements include:
 
-* Search articles by title
 * Read/Unread status
 * Favorite feeds
 * OPML import/export for subscriptions
