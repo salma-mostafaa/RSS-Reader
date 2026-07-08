@@ -416,7 +416,7 @@ h2 {
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 12px;
-    max-height: 42px;
+    max-height: var(--filters-collapsed-height, 42px);
     overflow: hidden;
     transition: max-height .25s ease;
 }
