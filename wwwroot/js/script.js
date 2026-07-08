@@ -7,6 +7,9 @@ const FEEDS_COLLAPSE_THRESHOLD = 2;
 let feedsExpanded = false; //whether the subscriptions list is showing everything, persists across reloads this session
 const articlesDiv = document.getElementById("articles");
 const filtersDiv = document.getElementById("filters");
+const filtersToggle = document.getElementById("filtersToggle");
+let filtersExpanded = false; //whether the filter tags are showing everything
+const FILTERS_COLLAPSED_HEIGHT = 42; //must match #filters max-height in style.css
 const articleCountSpan = document.getElementById("articleCount");
 const articleSearchInput = document.getElementById("articleSearch");
 let searchTerm = ""; //current article title search, lowercased
@@ -195,6 +198,28 @@ feedsToggle.addEventListener("click", () => {
     feedsExpanded = !feedsExpanded;
     applyFeedsCollapseState(allFeeds.length);
 });
+filtersToggle.addEventListener("click", () => {
+    filtersExpanded = !filtersExpanded;
+    applyFiltersCollapseState();
+});
+
+function applyFiltersCollapseState() {
+    filtersDiv.classList.remove("expanded"); //collapse first so scrollHeight reflects true content height
+
+    const isOverflowing = filtersDiv.scrollHeight > FILTERS_COLLAPSED_HEIGHT + 4;
+
+    if (!isOverflowing) {
+        filtersToggle.hidden = true;
+        return;
+    }
+
+    filtersToggle.hidden = false;
+    filtersDiv.classList.toggle("expanded", filtersExpanded);
+    filtersToggle.classList.toggle("expanded", filtersExpanded);
+    filtersToggle.querySelector(".feeds-toggle-text").textContent = filtersExpanded
+        ? "Show less"
+        : "Show more";
+}
 
 function applyFeedsCollapseState(feedCount) {
     const shouldOffercollapse = feedCount > FEEDS_COLLAPSE_THRESHOLD;
@@ -362,6 +387,8 @@ function renderFilters() {
 
         filtersDiv.appendChild(button);
     }
+
+    applyFiltersCollapseState();
 }
 
 function renderArticles() {
