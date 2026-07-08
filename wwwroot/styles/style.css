@@ -415,6 +415,17 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-bottom: 12px;
+    max-height: 42px;
+    overflow: hidden;
+    transition: max-height .25s ease;
+}
+
+    #filters.expanded {
+        max-height: 500px;
+    }
+
+.filters-toggle {
     margin-bottom: 20px;
 }
 
