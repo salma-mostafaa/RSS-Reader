@@ -206,7 +206,11 @@ filtersToggle.addEventListener("click", () => {
 function applyFiltersCollapseState() {
     filtersDiv.classList.remove("expanded"); //collapse first so scrollHeight reflects true content height
 
-    const isOverflowing = filtersDiv.scrollHeight > FILTERS_COLLAPSED_HEIGHT + 4;
+    const firstButton = filtersDiv.querySelector(".filter-btn");
+    const collapsedHeight = firstButton ? firstButton.offsetHeight : FILTERS_COLLAPSED_HEIGHT;
+    filtersDiv.style.setProperty("--filters-collapsed-height", `${collapsedHeight}px`); //clip exactly at the real button height, no guessing
+
+    const isOverflowing = filtersDiv.scrollHeight > collapsedHeight + 4;
 
     if (!isOverflowing) {
         filtersToggle.hidden = true;
