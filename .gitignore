@@ -9,3 +9,11 @@ obj/
 
 # Local data
 feeds.json
+feeds_*.json
+summary.json
+summary_*.json
+.env
+rss.db
+*.db-shm
+*.db-wal
+dpkeys/

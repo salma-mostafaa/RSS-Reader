@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Sign In — Personal RSS Reader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css?v=7">
+    <style>
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: var(--space-4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 424px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .login-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .login-logo .logo-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: var(--on-primary, #fff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+        }
+
+        .login-logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--on-surface, var(--text));
+            margin: 0;
+        }
+
+        .login-logo p {
+            font-size: 0.85rem;
+            color: var(--on-surface-variant, var(--muted));
+            margin: 0;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .login-form h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--on-surface, var(--text));
+            margin: 0;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface-variant, var(--surface-alt));
+            color: var(--on-surface, var(--text));
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-input::placeholder {
+            color: var(--on-surface-variant, var(--muted));
+            opacity: 0.7;
+        }
+
+        .login-error {
+            color: var(--error, #ba1a1a);
+            font-size: 0.85rem;
+            margin: 0;
+            text-align: center;
+            min-height: 1.2em;
+            line-height: 1.3;
+        }
+
+        .pwd-wrap { position: relative; display: flex; }
+        .pwd-wrap input { flex: 1; padding-right: 40px !important; }
+        .pwd-toggle {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600;
+            color: var(--on-surface-variant, var(--muted)); padding: 4px 6px; line-height: 1;
+            border-radius: 4px; user-select: none;
+        }
+        .pwd-toggle:hover { color: var(--primary); background: var(--surface-alt); }
+
+        .login-submit {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--primary);
+            color: var(--on-primary, #fff);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .login-submit:hover {
+            background: var(--primary-dark, var(--primary));
+            filter: brightness(0.9);
+        }
+
+        .login-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--on-surface-variant, var(--muted));
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 4px 0;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--surface, #fff);
+            color: var(--on-surface, var(--text));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .google-btn:hover {
+            background: var(--surface-variant, var(--surface-alt));
+            border-color: var(--primary);
+        }
+
+        .google-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .login-switch {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            text-align: center;
+            padding: 0;
+        }
+
+        .login-switch:hover {
+            color: var(--primary-dark, var(--primary));
+            filter: brightness(0.9);
+        }
+
+        .login-forgot {
+            background: none;
+            border: none;
+            color: var(--on-surface-variant, var(--muted));
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 0;
+            align-self: flex-end;
+        }
+
+        .login-forgot:hover {
+            color: var(--primary);
+        }
+
+        .login-success {
+            color: var(--secondary, #00786f);
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .login-back {
+            background: none;
+            border: none;
+            color: var(--on-surface-variant, var(--muted));
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            text-align: center;
+            padding: 0;
+        }
+
+        .login-back:hover {
+            color: var(--primary);
+        }
+
+        .login-footer {
+            text-align: center;
+            padding-top: 4px;
+            margin-top: 4px;
+            border-top: 1px solid var(--border);
+        }
+
+        .login-footer a {
+            color: var(--on-surface-variant, var(--muted));
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .login-footer a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: var(--space-4);
+                border-radius: var(--radius);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-background"></div>
+
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-circle">RSS</div>
+                <h1>Personal RSS Reader</h1>
+                <p>Your personal news hub</p>
+            </div>
+
+            <div id="loginMode" style="display:flex;flex-direction:column;gap:18px">
+                <h3>Sign in</h3>
+                <input id="loginEmail" class="login-input" type="email" autocomplete="email" placeholder="Email address">
+                <div class="pwd-wrap">
+                    <input id="loginPassword" class="login-input" type="password" autocomplete="current-password" placeholder="Password">
+                    <button type="button" class="pwd-toggle" data-target="loginPassword">Show</button>
+                </div>
+                <button id="loginForgot" class="login-forgot">Forgot password?</button>
+                <p id="loginError" class="login-error"></p>
+                <button id="loginSubmit" class="login-submit">Sign in</button>
+                <div class="login-divider">or</div>
+                <button id="googleLogin" class="google-btn">
+                    <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Sign in with Google
+                </button>
+                <button id="loginSwitch" class="login-switch">Create an account</button>
+            </div>
+
+            <div id="registerMode" style="display:none;flex-direction:column;gap:18px">
+                <h3>Create an account</h3>
+                <input id="registerEmail" class="login-input" type="email" autocomplete="email" placeholder="Email address">
+                <div class="pwd-wrap">
+                    <input id="registerPassword" class="login-input" type="password" autocomplete="new-password" placeholder="Password (min. 8 characters)">
+                    <button type="button" class="pwd-toggle" data-target="registerPassword">Show</button>
+                </div>
+                <p id="registerError" class="login-error"></p>
+                <button id="registerSubmit" class="login-submit">Create account</button>
+                <div class="login-divider">or</div>
+                <button id="googleRegister" class="google-btn">
+                    <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Sign up with Google
+                </button>
+                <button id="registerSwitch" class="login-switch">Already have an account? Sign in</button>
+            </div>
+
+            <div id="verifyMessage" style="display:none;flex-direction:column;gap:18px;text-align:center">
+                <h3>Check your email</h3>
+                <p style="color:var(--on-surface-variant,var(--muted));margin:0">We sent a verification link to your email. Click it to activate your account, then sign in.</p>
+                <button id="verifyBack" class="login-back">Back to sign in</button>
+            </div>
+
+            <div id="forgotMode" style="display:none;flex-direction:column;gap:18px">
+                <h3>Reset your password</h3>
+                <p style="font-size:0.9rem;color:var(--on-surface-variant,var(--muted));text-align:center;margin:0">Enter your email and we'll send you a reset link.</p>
+                <input id="forgotEmail" class="login-input" type="email" autocomplete="email" placeholder="Email address">
+                <p id="forgotError" class="login-error"></p>
+                <p id="forgotSuccess" class="login-success" style="display:none"></p>
+                <button id="forgotSubmit" class="login-submit">Send reset link</button>
+                <button id="forgotBack" class="login-back">Back to sign in</button>
+            </div>
+
+            <div id="resetMode" style="display:none;flex-direction:column;gap:18px">
+                <h3>Set new password</h3>
+                <div class="pwd-wrap">
+                    <input id="resetPassword" class="login-input" type="password" autocomplete="new-password" placeholder="New password (min. 8 characters)">
+                    <button type="button" class="pwd-toggle" data-target="resetPassword">Show</button>
+                </div>
+                <div class="pwd-wrap">
+                    <input id="resetPasswordConfirm" class="login-input" type="password" autocomplete="new-password" placeholder="Confirm new password">
+                    <button type="button" class="pwd-toggle" data-target="resetPasswordConfirm">Show</button>
+                </div>
+                <p id="resetError" class="login-error"></p>
+                <p id="resetSuccess" class="login-success" style="display:none"></p>
+                <button id="resetSubmit" class="login-submit">Reset password</button>
+                <button id="resetBack" class="login-back">Back to sign in</button>
+            </div>
+
+            <div class="login-footer">
+                <a href="/" id="homeLink">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var redirect = getRedirectParam();
+            var mode = getModeParam();
+            var resetToken = null;
+
+            initTheme();
+
+            document.querySelectorAll(".pwd-toggle").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    var input = document.getElementById(this.dataset.target);
+                    if (input.type === "password") { input.type = "text"; this.textContent = "Hide"; }
+                    else { input.type = "password"; this.textContent = "Show"; }
+                });
+            });
+
+            checkAuth().then(function () {
+                resetToken = getTokenParam();
+                if (resetToken) {
+                    showReset();
+                } else {
+                    showMode(mode === "register" ? "register" : "login");
+                }
+            });
+
+            function getRedirectParam() {
+                var params = new URLSearchParams(window.location.search);
+                return params.get("redirect") || "/";
+            }
+
+            function getModeParam() {
+                var params = new URLSearchParams(window.location.search);
+                return params.get("mode");
+            }
+
+            function getErrorParam() {
+                var params = new URLSearchParams(window.location.search);
+                return params.get("error");
+            }
+
+            function getTokenParam() {
+                var params = new URLSearchParams(window.location.search);
+                return params.get("token");
+            }
+
+            function initTheme() {
+                var theme = localStorage.getItem("rss-theme");
+                if (theme === "dark") {
+                    document.documentElement.setAttribute("data-theme", "dark");
+                }
+            }
+
+            async function checkAuth() {
+                try {
+                    var resp = await fetch("/auth/me");
+                    if (resp.ok) {
+                        window.location.replace(redirect);
+                    }
+                } catch (e) { }
+            }
+
+            function showMode(mode) {
+                document.getElementById("loginMode").style.display = mode === "login" ? "flex" : "none";
+                document.getElementById("registerMode").style.display = mode === "register" ? "flex" : "none";
+                document.getElementById("forgotMode").style.display = "none";
+                document.getElementById("resetMode").style.display = "none";
+
+                var errorMsg = getErrorParam();
+                if (errorMsg) {
+                    document.getElementById("loginError").textContent = decodeURIComponent(errorMsg);
+                }
+            }
+
+            function showForgot() {
+                document.getElementById("loginMode").style.display = "none";
+                document.getElementById("registerMode").style.display = "none";
+                document.getElementById("forgotMode").style.display = "flex";
+                document.getElementById("resetMode").style.display = "none";
+                document.getElementById("forgotSuccess").style.display = "none";
+                document.getElementById("forgotError").textContent = "";
+                document.getElementById("forgotEmail").value = "";
+            }
+
+            function showReset() {
+                document.getElementById("loginMode").style.display = "none";
+                document.getElementById("registerMode").style.display = "none";
+                document.getElementById("forgotMode").style.display = "none";
+                document.getElementById("resetMode").style.display = "flex";
+                document.getElementById("resetSuccess").style.display = "none";
+                document.getElementById("resetError").textContent = "";
+                document.getElementById("resetPassword").value = "";
+                document.getElementById("resetPasswordConfirm").value = "";
+            }
+
+            function googleLogin() {
+                var returnUrl = encodeURIComponent(redirect);
+                window.location.href = "/auth/google/login?returnUrl=" + returnUrl;
+            }
+
+            document.getElementById("googleLogin").addEventListener("click", googleLogin);
+            document.getElementById("googleRegister").addEventListener("click", googleLogin);
+
+            document.getElementById("loginSwitch").addEventListener("click", function () {
+                history.replaceState(null, "", "/register" + window.location.search);
+                showMode("register");
+            });
+
+            document.getElementById("registerSwitch").addEventListener("click", function () {
+                history.replaceState(null, "", "/login" + window.location.search);
+                showMode("login");
+            });
+
+            document.getElementById("verifyBack").addEventListener("click", function () {
+                showMode("login");
+            });
+
+            document.getElementById("loginForgot").addEventListener("click", function () {
+                history.replaceState(null, "", "/forgot-password" + window.location.search);
+                showForgot();
+            });
+
+            document.getElementById("forgotBack").addEventListener("click", function () {
+                showMode("login");
+            });
+
+            document.getElementById("resetBack").addEventListener("click", function () {
+                showMode("login");
+            });
+
+            document.getElementById("homeLink").addEventListener("click", function (e) {
+                e.preventDefault();
+                window.location.href = "/";
+            });
+
+            document.getElementById("loginSubmit").addEventListener("click", function () {
+                doSubmit("login");
+            });
+
+            document.getElementById("loginPassword").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") doSubmit("login");
+            });
+
+            document.getElementById("registerSubmit").addEventListener("click", function () {
+                doSubmit("register");
+            });
+
+            document.getElementById("registerPassword").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") doSubmit("register");
+            });
+
+            document.getElementById("forgotSubmit").addEventListener("click", doForgotPassword);
+            document.getElementById("forgotEmail").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") doForgotPassword();
+            });
+
+            document.getElementById("resetSubmit").addEventListener("click", doResetPassword);
+            document.getElementById("resetPasswordConfirm").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") doResetPassword();
+            });
+
+            async function doSubmit(mode) {
+                var isLogin = mode === "login";
+                var emailInput = document.getElementById(isLogin ? "loginEmail" : "registerEmail");
+                var passwordInput = document.getElementById(isLogin ? "loginPassword" : "registerPassword");
+                var errorEl = document.getElementById(isLogin ? "loginError" : "registerError");
+                var submitBtn = document.getElementById(isLogin ? "loginSubmit" : "registerSubmit");
+
+                errorEl.textContent = "";
+                submitBtn.disabled = true;
+
+                var response;
+                try {
+                    response = await fetch(isLogin ? "/auth/login" : "/auth/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: emailInput.value.trim(), password: passwordInput.value })
+                    });
+                } catch (e) {
+                    errorEl.textContent = "Network error. Please check your connection.";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                if (!response.ok) {
+                    var problem = await response.json().catch(function () { return null; });
+                    errorEl.textContent = (problem && problem.detail) || "An error occurred. Please try again.";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                var data = await response.json().catch(function () { return null; });
+                if (data && data.verified === false) {
+                    document.getElementById(isLogin ? "loginMode" : "registerMode").style.display = "none";
+                    var msg = document.getElementById("verifyMessage");
+                    msg.style.display = "flex";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                window.location.replace(redirect);
+            }
+
+            async function doForgotPassword() {
+                var emailInput = document.getElementById("forgotEmail");
+                var errorEl = document.getElementById("forgotError");
+                var successEl = document.getElementById("forgotSuccess");
+                var submitBtn = document.getElementById("forgotSubmit");
+
+                errorEl.textContent = "";
+                successEl.style.display = "none";
+                submitBtn.disabled = true;
+
+                var response;
+                try {
+                    response = await fetch("/auth/forgot-password", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: emailInput.value.trim() })
+                    });
+                } catch (e) {
+                    errorEl.textContent = "Network error. Please check your connection.";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                var data = await response.json().catch(function () { return null; });
+
+                if (response.ok) {
+                    successEl.textContent = "If an account with that email exists, a reset link has been sent.";
+                    successEl.style.display = "block";
+                } else {
+                    errorEl.textContent = (data && data.detail) || "An error occurred. Please try again.";
+                }
+
+                submitBtn.disabled = false;
+            }
+
+            async function doResetPassword() {
+                var passwordInput = document.getElementById("resetPassword");
+                var confirmInput = document.getElementById("resetPasswordConfirm");
+                var errorEl = document.getElementById("resetError");
+                var successEl = document.getElementById("resetSuccess");
+                var submitBtn = document.getElementById("resetSubmit");
+
+                errorEl.textContent = "";
+                successEl.style.display = "none";
+
+                if (passwordInput.value !== confirmInput.value) {
+                    errorEl.textContent = "Passwords do not match.";
+                    return;
+                }
+
+                if (!resetToken) {
+                    errorEl.textContent = "No reset token found. Please request a new reset link.";
+                    return;
+                }
+
+                submitBtn.disabled = true;
+
+                var response;
+                try {
+                    response = await fetch("/auth/reset-password", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ token: resetToken, newPassword: passwordInput.value })
+                    });
+                } catch (e) {
+                    errorEl.textContent = "Network error. Please check your connection.";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                var data = await response.json().catch(function () { return null; });
+
+                if (response.ok) {
+                    successEl.textContent = "Password reset successfully! Redirecting to sign in...";
+                    successEl.style.display = "block";
+                    resetToken = null;
+                    setTimeout(function () { showMode("login"); }, 2000);
+                } else {
+                    errorEl.textContent = (data && data.detail) || "An error occurred. Please try again.";
+                }
+
+                submitBtn.disabled = false;
+            }
+        })();
+    </script>
+</body>
+</html>
