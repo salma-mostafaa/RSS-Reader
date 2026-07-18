@@ -1,74 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal RSS Reader</title>
-    <link rel="stylesheet" href="styles/style.css">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <title data-i18n="title">
+        Personal RSS Reader
+    </title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="styles/style.css?v=7">
+
 </head>
+
 <body>
 
-    <header class="masthead">
-        <div class="masthead-brand">
-            <div>
-                <h1>Personal RSS Reader</h1>
+    <div class="page-background"></div>
+
+    <div id="appShell" class="app-layout">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-top">
+
+                <div class="logo-circle" id="logoCircle" style="cursor:pointer;">
+                    RSS
+                </div>
+
+                <div>
+                    <h1 data-i18n="heading">
+                        Personal RSS Reader
+                    </h1>
+                    <span data-i18n="tagline">
+                        Personal News Hub
+                    </span>
+                </div>
+
+                <button id="feedDrawerClose" class="feed-drawer-close-btn" aria-label="Close">✕</button>
+
             </div>
-        </div>
 
-        <div class="masthead-actions">
-            <button id="refreshAllButton" class="icon-btn" type="button" title="Refresh all feeds">
-                <span class="refresh-icon" aria-hidden="true">&#8635;</span>
-                <span class="btn-label">Refresh all</span>
-            </button>
-            <button id="themeToggle" class="icon-btn theme-toggle" type="button" title="Toggle dark mode" aria-pressed="false">
-                <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
-                <span class="theme-icon moon" aria-hidden="true">&#9789;</span>
-            </button>
-        </div>
-    </header>
+            <div class="feed-input-card">
+                <label data-i18n="feedUrlLabel">
+                    RSS Feed URL
+                </label>
+                <div class="feed-input-row">
+                    <input id="feedUrl"
+                           type="url"
+                           placeholder="https://example.com/feed.xml"
+                           data-i18n-placeholder="feedUrlPlaceholder">
+                    <button id="addFeedButton"
+                            data-i18n-title="addFeed">
+                        +
+                    </button>
+                </div>
+                <p id="feedUrlError" hidden></p>
+            </div>
 
-    <main>
-        <section class="add-feed">
-            <input id="feedUrl"
-                   type="text"
-                   placeholder="https://example.com/feed.xml">
-
-            <button id="addFeedButton" type="button">
-                Add feed
-            </button>
-        </section>
-        <span id="feedUrlError" class="field-error" hidden>Please enter a feed URL first</span>
-
-        <section>
-            <div class="feeds-heading">
-                <h2>Subscriptions</h2>
-                <button id="feedsToggle" class="feeds-toggle" type="button" hidden>
-                    <span class="feeds-toggle-text">Show all</span>
-                    <span class="feeds-toggle-icon" aria-hidden="true">&#9662;</span>
+            <div class="feed-panel">
+                <div class="panel-title">
+                    <h2 data-i18n="subscriptions">
+                        Subscriptions
+                    </h2>
+                    <span id="feedCounter">0</span>
+                </div>
+                <div class="feed-search-row">
+                    <svg class="feed-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                        <path d="M20 20L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <input id="feedSearchInput" type="text" data-i18n-placeholder="searchFeedsPlaceholder" placeholder="Search feeds...">
+                </div>
+                <div id="feedCategoryFilters" class="feed-category-filters"></div>
+                <button id="feedCategoryToggle" class="feed-category-toggle" hidden>
+                    <span class="feeds-toggle-text"></span>
                 </button>
+                <div id="feeds" class="feed-list"></div>
             </div>
-            <div id="feeds"></div>
-        </section>
 
-        <section>
-            <div class="articles-heading">
-                <h2>Dispatches</h2>
-                <span id="articleCount" class="article-count"></span>
+        </aside>
+
+        <div id="feedDrawerBackdrop" class="feed-drawer-backdrop"></div>
+
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <button id="feedDrawerToggle" class="feed-drawer-toggle-btn" data-i18n-title="browseFeeds">
+                    <span aria-hidden="true">☰</span>
+                    <span data-i18n="browseFeeds">Feeds</span>
+                </button>
+
+                <div class="header-left">
+                    <button id="accountToggle" class="account-icon-btn" data-i18n-title="accountMenu">👤</button>
+                    <div>
+                        <h2 data-i18n="welcomeHeading">
+                            Welcome Back 👋
+                        </h2>
+                        <p data-i18n="welcomeSubtitle">
+                            Stay updated with your favorite news.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="header-right">
+
+                    <div id="aiLimitBar" class="ai-limit-bar">
+                        <span id="aiLimitLabel"></span>
+                        <div class="ai-limit-track"><div id="aiLimitFill" class="ai-limit-fill"></div></div>
+                    </div>
+
+                    <button id="langToggle" class="icon-button" style="width:auto;height:auto;padding:4px 8px;font-size:11px;border-radius:6px;">
+                        <span class="btn-label">AR</span>
+                    </button>
+
+                    <button id="refreshAllButton" class="primary-button stacked" data-i18n="refreshAll" data-i18n-title="refreshAllTitle">
+                        Refresh
+                    </button>
+                    <button id="headerSignInButton" class="header-signin-btn">
+                        Sign in
+                    </button>
+
+                </div>
+
+                <button id="chatToggle" hidden></button>
+                <button id="playlistToggle" hidden><span id="playlistBadge" hidden></span></button>
+                <button id="savedToggle" hidden><span id="savedBadge" hidden></span></button>
+                <button id="historyToggle" hidden></button>
+                <button id="themeToggle" hidden></button>
+                <button id="langToggle" hidden><span class="btn-label"></span></button>
+
+            </header>
+
+            <section id="dashboardGrid" class="dashboard-grid">
+
+                <div class="hero-card">
+                    <div class="hero-content">
+                        <div class="hero-heading-row">
+                            <h2 data-i18n="dailySummaryHeading">
+                                Daily News Summary
+                            </h2>
+                            <div class="hero-btn-row">
+                                <button id="shareSummaryButton" class="hero-refresh-btn" data-i18n-title="shareSummary" hidden>📋</button>
+                                <button id="refreshSummaryButton" class="hero-refresh-btn" data-i18n-title="refreshSummary">↻</button>
+                            </div>
+                        </div>
+                        <div id="aiSummary" class="ai-summary-content">
+                            <p class="ai-summary-placeholder">Your personalized AI summary will appear here after refreshing your feeds.</p>
+                        </div>
+                        <button id="summaryToggle" hidden>
+                            <span class="feeds-toggle-text"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stat">
+                        <h3 id="articleCount">0 Articles</h3>
+                        <span data-i18n="statAvailable">Available</span>
+                    </div>
+                    <div class="stat">
+                        <h3 id="feedCountDisplay">0 Feeds</h3>
+                        <span data-i18n="statConnected">Connected</span>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="trending-card">
+                <div class="section-heading">
+                    <h2 data-i18n="trendingHeading">Trending Topics</h2>
+                </div>
+                <div id="trendingTopics"></div>
+                <button id="trendingToggle" hidden>
+                    <span class="feeds-toggle-text"></span>
+                </button>
+            </section>
+
+            <section class="articles-section">
+                <div class="search-wrapper articles-search">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                        <path d="M20 20L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <input id="articleSearch" type="text" placeholder="Search articles..." data-i18n-placeholder="searchPlaceholder">
+                </div>
+                <div id="articles"></div>
+                <div id="paginationBar" class="pagination-bar"></div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <div id="toastContainer"></div>
+    <div id="dialogOverlay" class="dialog-overlay hidden">
+        <div id="dialogBox" class="dialog-box"></div>
+    </div>
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-card">
+            <div class="loader"></div>
+            <p data-i18n="loading">Loading...</p>
+        </div>
+    </div>
+
+    <button id="scrollTopButton" class="scroll-top-btn" aria-label="Scroll to top">↑</button>
+
+    <div id="chatPanel" class="chat-panel hidden">
+        <div class="chat-header">
+            <span>💬 <span data-i18n="chatWithAI">Chat with AI</span></span>
+            <div class="chat-header-btns">
+                <button id="chatClearBtn" class="chat-header-btn" data-i18n-title="clearChat">🗑️</button>
+                <button id="chatCloseBtn" class="chat-header-btn">✕</button>
             </div>
-            <input id="articleSearch"
-                   class="article-search"
-                   type="text"
-                   placeholder="Search articles by title">
-            <div id="filters"></div>
-            <button id="filtersToggle" class="feeds-toggle filters-toggle" type="button" hidden>
-                <span class="feeds-toggle-text">Show more</span>
-                <span class="feeds-toggle-icon" aria-hidden="true">&#9662;</span>
-            </button>
-            <div id="articles"></div>
-        </section>
-    </main>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-row">
+            <input id="chatInput" type="text" placeholder="Ask about your articles..." data-i18n-placeholder="chatPlaceholder">
+            <button id="chatSendBtn" class="chat-send-btn">➤</button>
+        </div>
+    </div>
 
-    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
-    <script src="js/script.js"></script>
+    <div class="floating-actions" id="floatingActions">
+        <button id="fabToggle" class="fab-btn fab-toggle">＋</button>
+        <div class="fab-menu" id="fabMenu" hidden>
+            <button id="fabHome" class="fab-btn" data-i18n-title="backToArticlesShort">🏠</button>
+            <button id="fabChat" class="fab-btn" data-i18n-title="chatWithAI">💬</button>
+            <button id="fabPlaylist" class="fab-btn" data-i18n-title="playlistTitle">🔖<span id="fabPlaylistBadge" class="fab-badge" hidden>0</span></button>
+            <button id="fabSaved" class="fab-btn" data-i18n-title="savedPageTitle">⭐<span id="fabSavedBadge" class="fab-badge" hidden>0</span></button>
+            <button id="fabHistory" class="fab-btn" data-i18n-title="historyPageTitle">🕘</button>
+            <button id="fabTheme" class="fab-btn" data-i18n-title="themeTitle">🌙</button>
+        </div>
+    </div>
+
+    <script src="js/script.js?v=7"></script>
+
 </body>
 </html>
